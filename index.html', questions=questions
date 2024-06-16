@@ -1,0 +1,41 @@
+# استيراد المكتبات اللازمة
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# تعريف الأسئلة والإجابات
+questions = [
+    {
+        'question': 'كم عدد ركعات صلاة عيد الأضحى؟',
+        'options': ['ركعتان', 'ثلاث ركعات', 'أربع ركعات'],
+        'correct_answer': 'ركعتان'
+    },
+    {
+        'question': 'متى يشتري الناس الأضاحي في عيد الأضحى؟',
+        'options': ['بعد صلاة العيد', 'قبل صلاة العيد', 'لا أعلم'],
+        'correct_answer': 'بعد صلاة العيد'
+    },
+    {
+        'question': 'ما هي اللحوم التي نضحي بها في عيد الأضحى؟',
+        'options': ['الأبل', 'الحمير', 'الخنازير'],
+        'correct_answer': 'الأبل'
+    }
+]
+
+# تعريف الصفحة الرئيسية
+@app.route('/')
+def index():
+    return render_template('index.html', questions=questions)
+
+# تعريف الصفحة النتيجة
+@app.route('/result', methods=['POST'])
+def result():
+    score = 0
+    for question in questions:
+        user_answer = request.form.get(question['question'])
+        if user_answer == question['correct_answer']:
+            score += 1
+    return render_template('result.html', score=score)
+
+if __name__ == '__main__':
+    app.run(debug=True)
